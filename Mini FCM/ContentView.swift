@@ -25,10 +25,15 @@ struct ContentView: View {
                 ForEach($project) { $item in
                     NavigationLink(destination: CodeSpace(ProjectInfo: item, pathstate: $actpath, action: $action)) {
                         HStack {
-                            if item.type == "1" {
+                            switch Int(item.type) ?? 0 {
+                            case 1:
                                 CodeBubble(title: "C", titleColor: Color.white, bubbleColor: Color(UIColor.darkGray))
-                            } else if item.type == "2" {
+                            case 2:
                                 CodeBubble(title: "Lua", titleColor: Color.white, bubbleColor: Color.blue)
+                            case 3:
+                                CodeBubble(title: "HTML", titleColor: Color.white, bubbleColor: Color.red)
+                            default:
+                                CodeBubble(title: "?", titleColor: Color.white, bubbleColor: Color.gray)
                             }
                             Spacer().frame(width: 20)
                             Text(item.name)
@@ -78,7 +83,7 @@ struct ContentView: View {
             BottomPopupView {
                 POHeader(title: "Create Project")
                 POTextField(title: "Name", content: $name)
-                POPicker(function: create_project, title: "Schemes", arrays: [PickerArrays(title: "Scripting", items: [PickerItems(id: 1, name: "C"), PickerItems(id: 2, name: "Lua")])], type: $type)
+                POPicker(function: create_project, title: "Schemes", arrays: [PickerArrays(title: "Scripting", items: [PickerItems(id: 1, name: "C"), PickerItems(id: 2, name: "Lua"), PickerItems(id: 3, name: "HTML")])], type: $type)
             }
             .background(BackgroundClearView())
             .edgesIgnoringSafeArea([.bottom])
@@ -93,9 +98,6 @@ struct ContentView: View {
     private func create_project() -> Void {
         _ = MakeMiniProject(Name: name, type: type)
         GetProjectsBind(Projects: $project)
-    }
-    
-    private func dissmiss_popup() -> Void {
         create_project_popup = false
     }
 }
