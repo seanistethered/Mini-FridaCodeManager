@@ -38,6 +38,9 @@ func MakeMiniProject(Name: String, type: Int) -> Int {
         case 2: // LUA
             FileManager.default.createFile(atPath: "\(ProjectPath)/main.lua", contents: Data("print(\"Hello, World!\")".utf8))
             break
+        case 3: // HTML
+            FileManager.default.createFile(atPath: "\(ProjectPath)/index.html", contents: Data("<html>\n    <head>\n        </meta charset=\"UTF-8\">\n    </head>\n    <body>\n        <p>Hello, World</p>\n    </body>\n</html>".utf8))
+            break
         default:
             return 2
         }
