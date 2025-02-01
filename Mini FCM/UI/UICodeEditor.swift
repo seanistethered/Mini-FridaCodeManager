@@ -477,6 +477,21 @@ struct NeoEditor: UIViewRepresentable {
             guard let textView = textView as? CustomTextView else { return }
             textView.disableHighlightLayer()
         }
+        
+        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+            if (!text.contains("\n")) {
+                // nothing is abnormal, return
+                return true;
+            } else {
+                guard let textView = textView as? CustomTextView else { return false }
+                guard let cur_line_text = currentLine(in: textView) else { return false }
+                
+                let count = countConsecutiveOccurrences(of: "\t", in: cur_line_text)
+                
+                parent.insertTextAtCurrentPosition(textView: textView, newText: "\n\(String(repeating: "\t", count:count))")
+                return false
+            }
+        }
     }
 }
 
@@ -1103,10 +1118,4 @@ struct NeoEditorSettings: View {
         .navigationBarTitleDisplayMode(.inline)
         .listStyle(InsetGroupedListStyle())
     }
-}
-
-func gsuffix(from fileName: String) -> String {
-    let trimmedFileName = fileName.replacingOccurrences(of: " ", with: "")
-    let suffix = URL(string: trimmedFileName)?.pathExtension
-    return suffix ?? ""
 }
